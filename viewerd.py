@@ -42,6 +42,8 @@ while 1:
     # Only refresh the directory listing every 6 iterations, or when the file list is empty
     files = os.listdir("/mnt/serverscratch/4k-screen/rawdata")
 
+    files.sort(key=lambda x: os.path.getctime("/mnt/serverscratch/4k-screen/rawdata/" + x))
+
     if len(files) == 0:
         sleep()
         continue
