@@ -65,7 +65,12 @@ while 1:
         continue
 
     sleep()
-    os.remove("/mnt/serverscratch/4k-screen/rawdata/" + current)
+
+    try:
+        os.remove("/mnt/serverscratch/4k-screen/rawdata/" + current)
+    except OSError, e:
+        print "File already deleted."
+        pass
 
 
 
