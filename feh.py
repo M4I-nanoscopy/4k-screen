@@ -21,7 +21,7 @@ class Feh:
 
     def zoom_100(self, file, dir):
 
-        subprocess.Popen([FEH, "-q", "-F","--zoom", "100", "-Y","--info","stat -c %%z %F","-d", "-R", "40", "-C",  "/home/pi/feh-2.13/share/fonts/", "-e", "yudit/40", "--draw-tinted", file], cwd=dir)
+        subprocess.Popen([FEH, "-q", "-F","--zoom", "100", "-Y","--info","/home/pi/4k-screen/date.sh %F","-d", "-R", "40", "-C",  "/home/pi/feh-2.13/share/fonts/", "-e", "yudit/40", "--draw-tinted", file], cwd=dir)
 
         self.mode = ZOOM_100
 
