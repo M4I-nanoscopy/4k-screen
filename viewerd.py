@@ -65,42 +65,26 @@ while 1:
         sleep(min_sleep_time)
         continue
 
-    if num_of_files>1:
-        if os.path.exists(sorted_raw_img_path + current):
-            print "Show %s" % current
-            feh.zoom_100(current, sorted_raw_img_path)
-        else:
-            print "File %s does not exist. Weird! System overloaded?" % current
-            sleep(min_sleep_time)
-            continue
     
-        sleep_time = max_sleep_time/num_of_files
-    
-        if sleep_time<min_sleep_time:
-            sleep(min_sleep_time)
-        else:
-            sleep(sleep_time)
+    if os.path.exists("/mnt/serverscratch/4k-screen/rawdata/" + current):
+        print "Show %s" % current
+        if feh.current!=current:
+            feh.zoom_100(current, "/mnt/serverscratch/4k-screen/rawdata/")
+    else:
+        print "File %s does not exist. Weird! System overloaded?" % current
+        time.sleep(min_sleep_time)
+        continue
+        
+    sleep_time = max_sleep_time/num_of_files
 
+    if sleep_time<min_sleep_time:
+        sleep(min_sleep_time)
+    else:
+        sleep(sleep_time)     
+
+    if num_of_files>1:
         try:
-            os.remove(sorted_raw_img_path + current)
+            os.remove("/mnt/serverscratch/4k-screen/rawdata/" + current)
         except OSError, e:
             print "File already deleted."
             pass
-
-    else:
-        if os.path.exists(sorted_raw_img_path + current):
-            print "Show %s" % current
-            if feh.current!=current:
-                feh.zoom_100(current, sorted_raw_img_path)
-        else:
-            print "File %s does not exist. Weird! System overloaded?" % current
-            sleep(min_sleep_time)
-            continue
-
-        sleep(max_sleep_time)
-
-
-
-
-
-

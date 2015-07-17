@@ -2,7 +2,7 @@ import subprocess
 import signal
 import time
 
-FEH = "feh"
+FEH = "/home/pi/feh-2.13/src/feh"
 #FEH = "feh"
 
 FULL_SCREEN = 1
