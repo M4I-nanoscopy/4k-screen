@@ -66,10 +66,10 @@ while 1:
         continue
 
     
-    if os.path.exists(raw_img_path + current):
+    if os.path.exists(sorted_raw_img_path + current):
         print "Show %s" % current
         if feh.current!=current:
-            feh.zoom_100(current, raw_img_path)
+            feh.zoom_100(current, sorted_raw_img_path)
     else:
         print "File %s does not exist. Weird! System overloaded?" % current
         time.sleep(min_sleep_time)
@@ -84,7 +84,7 @@ while 1:
 
     if num_of_files>1:
         try:
-            os.remove(raw_img_path + current)
+            os.remove(sorted_raw_img_path + current)
         except OSError, e:
             print "File already deleted."
             pass
