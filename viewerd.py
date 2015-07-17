@@ -14,7 +14,7 @@ feh = feh.Feh()
 list_counter = 0
 files = []
 user_files = []
-
+max_sleep_time = 120
 
 def sleep(t):
     print "--- sleeping... ---"
@@ -45,9 +45,9 @@ while 1:
 
     files.sort(key=lambda x: os.path.getctime("/mnt/serverscratch/4k-screen/rawdata/" + x))
     
-    numberOfFiles = len(files)
+    num_of_files = len(files)
 
-    if numberOfFiles == 0:
+    if num_of_files == 0:
         sleep(30)
         continue
 
@@ -67,15 +67,15 @@ while 1:
         sleep(10)
         continue
     
-    sleepTime = 120/numberOfFiles
+    sleep_time = max_sleep_time/num_Of_files
     
-    if sleepTime<10:
+    if sleep_time<10:
         sleep(10)
     else:
-        sleep(sleepTime)
+        sleep(sleep_time)
 
     try:
-	    os.remove("/mnt/serverscratch/4k-screen/rawdata/" + current)
+        os.remove("/mnt/serverscratch/4k-screen/rawdata/" + current)
     except OSError, e:
         print "File already deleted."
         pass
