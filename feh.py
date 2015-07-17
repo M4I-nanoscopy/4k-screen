@@ -10,7 +10,7 @@ ZOOM_100 = 2
 
 class Feh:
     mode = 0
-
+    current = "0"
     def full_screen(self, dir):
         if self.mode == FULL_SCREEN and self.is_running():
             return
