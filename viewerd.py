@@ -14,11 +14,11 @@ feh = feh.Feh()
 list_counter = 0
 files = []
 user_files = []
-max_sleep_time = 120
+max_sleep_time = 12
 min_sleep_time = 10
 def_sleep_time = 30
-drop_img_path = "/home/local/UNIMAAS/m4i-guest/serverscratch/4k-screen/drop_images_here"
-raw_img_path = "/home/local/UNIMAAS/m4i-guest/serverscratch/4k-screen/rawdata"
+drop_img_path = "/home/local/UNIMAAS/h.boulanger/Test/drop_images_here"
+raw_img_path = "/home/local/UNIMAAS/h.boulanger/Test/rawdata"
 sorted_raw_img_path = raw_img_path + "/"
 
 
@@ -62,31 +62,42 @@ while 1:
     # Cifs drops sometimes temp files in the directory. Skip
     if re.match("cifs.{4}", current):
         print "Skipping temp file %s "  % current
-	sleep(min_sleep_time)
-        continue
-
-    if os.path.exists(sorted_raw_img_path + current):
-        print "Show %s" % current
-        feh.zoom_100(current, sorted_raw_img_path)
-    else:
-        print "File %s does not exist. Weird! System overloaded?" % current
         sleep(min_sleep_time)
         continue
+
+    if num_of_files>1:
+        if os.path.exists(sorted_raw_img_path + current):
+            print "Show %s" % current
+            feh.zoom_100(current, sorted_raw_img_path)
+        else:
+            print "File %s does not exist. Weird! System overloaded?" % current
+            sleep(min_sleep_time)
+            continue
     
-    sleep_time = max_sleep_time/num_Of_files
+        sleep_time = max_sleep_time/num_of_files
     
-    if sleep_time<min_sleep_time:
-        sleep(min_sleep_time)
+        if sleep_time<min_sleep_time:
+            sleep(min_sleep_time)
+        else:
+            sleep(sleep_time)
+
+        try:
+            os.remove(sorted_raw_img_path + current)
+        except OSError, e:
+            print "File already deleted."
+            pass
+
     else:
-        sleep(sleep_time)
+        if os.path.exists(sorted_raw_img_path + current):
+            print "Show %s" % current
+            if feh.current!=current:
+                feh.zoom_100(current, sorted_raw_img_path)
+        else:
+            print "File %s does not exist. Weird! System overloaded?" % current
+            sleep(min_sleep_time)
+            continue
 
-    try:
-        os.remove(sorted_raw_img_path + current)
-    except OSError, e:
-        print "File already deleted."
-        pass
-
-
+        sleep(max_sleep_time)
 
 
 

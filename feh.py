@@ -2,7 +2,7 @@ import subprocess
 import signal
 import time
 
-FEH = "/home/pi/feh-2.13/src/feh"
+FEH = "feh"
 #FEH = "feh"
 
 FULL_SCREEN = 1
@@ -20,9 +20,9 @@ class Feh:
         self.mode = FULL_SCREEN
 
     def zoom_100(self, file, dir):
-
-        subprocess.Popen([FEH, "-q", "-F","--zoom", "100", "-Y","--info","/home/local/UNIMAAS/m4i-guest/date.sh %F","-d", "-R", "40", "-C",  "/home/pi/feh-2.13/share/fonts/", "-e", "yudit/40", "--draw-tinted", file], cwd=dir)
-
+        
+        subprocess.Popen([FEH, "-q", "-F","--zoom", "100", "-Y","--info","/home/local/UNIMAAS/h.boulanger/4k-screen/date.sh %F","-d", "-R", "15", "-C",  "/home/pi/feh-2.13/share/fonts/", "-e", "yudit/40", "--draw-tinted", file], cwd=dir)
+        self.current = file
         self.mode = ZOOM_100
 
 
