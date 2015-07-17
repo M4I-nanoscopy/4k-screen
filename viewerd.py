@@ -15,6 +15,8 @@ list_counter = 0
 files = []
 user_files = []
 max_sleep_time = 120
+min_sleep_time = 10
+mid_sleep_time = 30
 
 def sleep(t):
     print "--- sleeping... ---"
@@ -30,12 +32,12 @@ while 1:
         print "Full screen mode for user images"
         feh.full_screen("/mnt/serverscratch/4k-screen/drop_images_here")
 
-        sleep(30)
+        sleep(mid_sleep_time)
         continue
 
     if datetime.datetime.now().hour > 20 or datetime.datetime.now().hour < 7:
 	print "Outside office hours, go home!"
-	sleep(30)
+	sleep(mid_sleep_time)
 	continue
 
     print "Raw data mode in 100% zoom"
@@ -48,7 +50,7 @@ while 1:
     num_of_files = len(files)
 
     if num_of_files == 0:
-        sleep(30)
+        sleep(mid_sleep_time)
         continue
 
     current = files.pop(0)
@@ -56,7 +58,7 @@ while 1:
     # Cifs drops sometimes temp files in the directory. Skip
     if re.match("cifs.{4}", current):
         print "Skipping temp file %s "  % current
-	sleep(10)
+	sleep(min_sleep_time)
         continue
 
     if os.path.exists("/mnt/serverscratch/4k-screen/rawdata/" + current):
@@ -64,13 +66,13 @@ while 1:
         feh.zoom_100(current, "/mnt/serverscratch/4k-screen/rawdata/")
     else:
         print "File %s does not exist. Weird! System overloaded?" % current
-        sleep(10)
+        sleep(min_sleep_time)
         continue
     
     sleep_time = max_sleep_time/num_Of_files
     
-    if sleep_time<10:
-        sleep(10)
+    if sleep_time<min_sleep_time:
+        sleep(min_sleep_time)
     else:
         sleep(sleep_time)
 
