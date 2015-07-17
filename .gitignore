@@ -4,3 +4,4 @@ cifs-credentials
 *.dff
 .imagic_history
 *.pyc
+*~

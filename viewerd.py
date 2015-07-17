@@ -15,7 +15,7 @@ list_counter = 0
 files = []
 user_files = []
 
-#I put a time variable
+
 def sleep(t):
     print "--- sleeping... ---"
     print 
@@ -44,8 +44,10 @@ while 1:
     files = os.listdir("/mnt/serverscratch/4k-screen/rawdata")
 
     files.sort(key=lambda x: os.path.getctime("/mnt/serverscratch/4k-screen/rawdata/" + x))
+    
+    numberOfFiles = len(files)
 
-    if len(files) == 0:
+    if numberOfFiles == 0:
         sleep(30)
         continue
 
@@ -64,11 +66,16 @@ while 1:
         print "File %s does not exist. Weird! System overloaded?" % current
         sleep(10)
         continue
-
-    sleep(30)
+    
+    sleepTime = 120/numberOfFiles
+    
+    if sleepTime<10:
+        sleep(10)
+    else:
+        sleep(sleepTime)
 
     try:
-        os.remove("/mnt/serverscratch/4k-screen/rawdata/" + current)
+	    os.remove("/mnt/serverscratch/4k-screen/rawdata/" + current)
     except OSError, e:
         print "File already deleted."
         pass
