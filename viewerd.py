@@ -17,8 +17,8 @@ user_files = []
 max_sleep_time = 120
 min_sleep_time = 10
 def_sleep_time = 30
-drop_img_path = "/mnt/serverscratch/4k-screen/drop_images_here"
-raw_img_path = "/mnt/serverscratch/4k-screen/rawdata"
+drop_img_path = "/home/local/UNIMAAS/m4i-guest/serverscratch/4k-screen/drop_images_here"
+raw_img_path = "/home/local/UNIMAAS/m4i-guest/serverscratch/4k-screen/rawdata"
 sorted_raw_img_path = raw_img_path + "/"
 
 
