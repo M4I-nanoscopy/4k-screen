@@ -8,17 +8,14 @@ import time
 import glob
 import re
 import feh
+from config import *
 
 feh = feh.Feh()
 
 list_counter = 0
 files = []
 user_files = []
-max_sleep_time = 12
-min_sleep_time = 10
-def_sleep_time = 30
-drop_img_path = "/home/local/UNIMAAS/h.boulanger/Test/drop_images_here"
-raw_img_path = "/home/local/UNIMAAS/h.boulanger/Test/rawdata"
+
 sorted_raw_img_path = raw_img_path + "/"
 
 
