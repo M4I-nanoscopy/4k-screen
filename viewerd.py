@@ -20,7 +20,7 @@ sorted_raw_img_path = raw_img_path + "/"
 
 
 def sleep(t):
-    print "--- sleeping... ---"
+    print "--- sleeping %s seconds... ---" % t
     print 
 
     time.sleep(t)
