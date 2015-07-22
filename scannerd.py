@@ -16,8 +16,9 @@ ignore_datasets_started_days_ago = 1
 ignored_dirs = {}
 known_files = {}
 
-WORKING_DIR = "/home/admin/scannerd/serverscratch/4k-screen"
-RAWDATA = "/home/admin/scannerd/rawdata_ro"
+WORKING_DIR = "/home/Test/serverscratch/4k-screen"
+RAWDATA = "/home/Test/rawdata_ro"
+MRC_TO_TIF = "/home/4k-screen/mrc2tif.sh"
 
 def only_accept_extensions(fn, extlist, case_sensitive=False):
     if not case_sensitive:
@@ -82,7 +83,7 @@ def process( ffn ):
     copy(ffn)
 
 def mrc_convert_autoscale( ffn ):
-    queue("/home/admin/scannerd/mrc2tif.sh '%s' '%s'" % (ffn, WORKING_DIR + '/rawdata/' + os.path.basename(ffn).replace('.mrc','')))
+    queue(MRC_TO_TIF+" '%s' '%s'" % (ffn, WORKING_DIR + '/rawdata/' + os.path.basename(ffn).replace('.mrc','')))
 
 def autocontrast( ffn ):
     queue("/usr/bin/convert -auto-level '%s' '%s'" % (ffn, WORKING_DIR + '/rawdata/' + os.path.basename(ffn)))
