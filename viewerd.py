@@ -83,6 +83,7 @@ while 1:
     if num_of_files>1:
         try:
             os.remove(sorted_raw_img_path + current)
+            os.remove(sorted_raw_img_path + 'Caption/' + current + '.txt')
         except OSError, e:
             print "File already deleted."
             pass
