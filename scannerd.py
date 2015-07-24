@@ -88,14 +88,32 @@ def mrc_convert_autoscale( ffn ):
 def autocontrast( ffn ):
     queue("/usr/bin/convert -auto-level '%s' '%s'" % (ffn, no_doubles(ffn)))
 
-def no_doubles( ffn ):
+def no_doubles( ffn , extension='.tif' ):
     double_diff = 0
-    copypath = WORKING_DIR + '/rawdata/' + os.path.basename(ffn).replace('.mrc','.tif')
+    copypath = WORKING_DIR + '/rawdata/' + os.path.basename(ffn)[:-4] + extension
     copy_copypath = copypath
     while os.path.exists(copy_copypath):
         double_diff+=1
-        copy_copypath = copypath[:-4] + str(double_diff) + '.tif'
+        copy_copypath = copypath[:-4] + str(double_diff) + extension
     return copy_copypath
+
+def info( ffn , dirname , copypath ):
+    f = open(copypath,'a')
+    date_epoch = os.path.getmtime( ffn )
+    date_struct = time.gmtime(date_epoch)
+    year,month,mday,hour,mn,sec = date_struct[:6]
+    date = str(year) + '/' + str(month) + '/' + str(mday) + ' ' + str(hour) + ':' + str(mn) + ':' + str(sec)
+    f.write(date + '\n')
+
+    microscope = os.path.split( dirname )[0]
+    microscope = os.path.basename ( microscope)
+    f.write(microscope + '\n')
+
+    operator = os.path.basename( dirname )
+    operator = operator[9:]
+    f.write(operator)
+
+    f.close()
 
 def copy( ffn ):    
     queue("/bin/cp '%s' '%s'" % (ffn, no_doubles(ffn)))
@@ -140,7 +158,7 @@ while 1:
                         continue
 
                     new_files.append( ffn )
-    
+                    info ( ffn, dataset_dirname, no_doubles(ffn,'.txt'))
     
 
     for ffn in new_files:
