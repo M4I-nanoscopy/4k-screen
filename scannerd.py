@@ -16,9 +16,9 @@ ignore_datasets_started_days_ago = 1
 ignored_dirs = {}
 known_files = {}
 
-WORKING_DIR = "/home/Test/serverscratch/4k-screen"
-RAWDATA = "/home/Test/rawdata_ro"
-MRC_TO_TIF = "/home/4k-screen/mrc2tif.sh"
+WORKING_DIR = "/home/local/UNIMAAS/h.boulanger/Test/serverscratch/4k-screen"
+RAWDATA = "/home/local/UNIMAAS/h.boulanger/Test/rawdata_ro"
+MRC_TO_TIF = "/home/local/UNIMAAS/h.boulanger/4k-screen/mrc2tif.sh"
 
 def only_accept_extensions(fn, extlist, case_sensitive=False):
     if not case_sensitive:
@@ -83,13 +83,22 @@ def process( ffn ):
     copy(ffn)
 
 def mrc_convert_autoscale( ffn ):
-    queue(MRC_TO_TIF+" '%s' '%s'" % (ffn, WORKING_DIR + '/rawdata/' + os.path.basename(ffn).replace('.mrc','')))
+    queue("/home/local/UNIMAAS/h.boulanger/4k-screen/mrc2tif.sh '%s' '%s'" % (ffn, no_doubles(ffn) ))
 
 def autocontrast( ffn ):
-    queue("/usr/bin/convert -auto-level '%s' '%s'" % (ffn, WORKING_DIR + '/rawdata/' + os.path.basename(ffn)))
+    queue("/usr/bin/convert -auto-level '%s' '%s'" % (ffn, no_doubles(ffn)))
 
-def copy( ffn ):
-    queue("/bin/cp '%s' '%s'" % (ffn, WORKING_DIR + '/rawdata/' + os.path.basename(ffn)))
+def no_doubles( ffn ):
+    double_diff = 0
+    copypath = WORKING_DIR + '/rawdata/' + os.path.basename(ffn).replace('.mrc','.tif')
+    copy_copypath = copypath
+    while os.path.exists(copy_copypath):
+        double_diff+=1
+        copy_copypath = copypath[:-4] + str(double_diff) + '.tif'
+    return copy_copypath
+
+def copy( ffn ):    
+    queue("/bin/cp '%s' '%s'" % (ffn, no_doubles(ffn)))
 
 def queue( command ):
     # Simply add a command to the queue
@@ -131,6 +140,8 @@ while 1:
                         continue
 
                     new_files.append( ffn )
+    
+    
 
     for ffn in new_files:
         print "Processing %s to serverscratch" % ffn

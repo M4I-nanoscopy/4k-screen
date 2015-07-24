@@ -8,6 +8,7 @@ import time
 import glob
 import re
 import feh
+from math import sqrt
 from config import *
 
 feh = feh.Feh()
@@ -72,7 +73,7 @@ while 1:
         time.sleep(min_sleep_time)
         continue
         
-    sleep_time = max_sleep_time/num_of_files
+    sleep_time = max_sleep_time/sqrt(num_of_files)
 
     if sleep_time<min_sleep_time:
         sleep(min_sleep_time)
