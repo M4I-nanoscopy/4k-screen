@@ -36,10 +36,13 @@ def match_dataset( dirname ):
         print "Ignoring from now on, not named like a dataset dir: %r" % dirname
         return False
 
-    yr,mo,dy = m.groups()
+    #Does not find changes if a directory inside the directory is changed e.g : .*/20150721_rgb.ravelli/test/
+    #if test is changed it will not detect it
+    dir_epoch_time = os.path.getmtime( dirname )
+    yr,mo,dy = time.gmtime(dir_epoch_time)[:3]
 
     # no time, so be pessimistic about when on that day it was started
-    dataset_datetime = datetime.datetime( int(yr), int(mo), int(dy), 23,59) 
+    dataset_datetime = datetime.datetime( yr, mo, dy, 23,59) 
     ago = now - dataset_datetime
     if ago.days > ignore_datasets_started_days_ago:
         print "Ignoring from now on, %d is more than %s days ago: %r"%( ago.days, 
