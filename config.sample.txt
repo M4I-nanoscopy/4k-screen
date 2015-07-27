@@ -1,0 +1,2 @@
+autocontrast .*/T12.*/.*.tif .*/ARCTICA/.*.tif
+mrc_convert_autoscale .*.mrc

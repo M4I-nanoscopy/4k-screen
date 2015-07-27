@@ -13,8 +13,12 @@ import shlex
 ignore_datasets_started_days_ago = 1
 
 ' TODO: save scanned file list, so that we can load that, instead of having to do one initial scan. '
-ignored_dirs = {}
-known_files = {}
+f = open( "/home/local/UNIMAAS/h.boulanger/4k-screen/ignored_dirs.txt", 'a')
+f.close()
+
+f = open( "/home/local/UNIMAAS/h.boulanger/4k-screen/known_files.txt", 'a')
+f.close()
+
 
 WORKING_DIR = "/home/local/UNIMAAS/h.boulanger/Test/serverscratch/4k-screen"
 RAWDATA = "/home/local/UNIMAAS/h.boulanger/Test/rawdata_ro"
@@ -65,15 +69,7 @@ def file_blacklist( ffn ):
     return False
 
 def process( ffn ):
-    conversions = {
-        "autocontrast": [
-            '.*/T12.*/.*.tif',
-            '.*/ARCTICA/.*.tif'
-        ],
-        "mrc_convert_autoscale": [
-            '.*.mrc'
-        ]
-    }
+    conversions = text2dict( "/home/local/UNIMAAS/h.boulanger/4k-screen/config.txt" )
 
     for convert_function, patterns in conversions.iteritems():
         for pattern in patterns:
@@ -84,6 +80,18 @@ def process( ffn ):
                 return
 
     copy(ffn)
+
+def text2dict( file ):
+    dictionary = {}
+    f =  open(file,'r')
+    lines = f.readlines()
+    for line in lines :
+        splitline = line.split()
+        key = splitline[0]
+        value = splitline[1:]
+        dictionary[key] = value
+    f.close()
+    return dictionary
 
 def mrc_convert_autoscale( ffn ):
     queue("/home/local/UNIMAAS/h.boulanger/4k-screen/mrc2tif.sh '%s' '%s'" % (ffn, no_doubles(ffn) ))
@@ -128,6 +136,10 @@ def queue( command ):
     # Simply add a command to the queue
     subprocess.call(shlex.split('/usr/bin/tsp -n %s' % command))
 
+
+
+
+
 while 1: 
     now = datetime.datetime.now()
 
@@ -135,18 +147,27 @@ while 1:
     inspected_dirs = 0
     new_file_stats = 0
     new_files = [] # ffn
-
+    ignored_dirs = text2dict( "/home/local/UNIMAAS/h.boulanger/4k-screen/ignored_dirs.txt" )
+    known_files = text2dict( "/home/local/UNIMAAS/h.boulanger/4k-screen/known_files.txt" )
+ 
     for dataset_dirname in glob.glob( os.path.join( RAWDATA ,'*', '*') ):
+
+        ignored = open( "/home/local/UNIMAAS/h.boulanger/4k-screen/ignored_dirs.txt", 'a' )
 
         if dataset_dirname in ignored_dirs:
             continue
 
         if not match_dataset( dataset_dirname ):
             ignored_dirs[dataset_dirname] = True
+            ignored.write("%s True\n" % (dataset_dirname))
             continue
+
+        ignored.close()
 
         print 'walking %r' % dataset_dirname
         inspected_dirs += 1
+
+        known = open("/home/local/UNIMAAS/h.boulanger/4k-screen/known_files.txt", 'a')
 
         for r, ds, fs in os.walk( dataset_dirname ):
 
@@ -157,7 +178,11 @@ while 1:
                     if ffn in known_files:
                         continue
 
+
+                     
                     known_files[ffn] = True
+                    known.write("%s True\n" %(ffn))
+                    
 
                     if file_blacklist(ffn):
                         print "Blacklisted %s" % ffn
@@ -165,7 +190,8 @@ while 1:
 
                     new_files.append( ffn )
                     info ( ffn, dataset_dirname, no_doubles(ffn))
-    
+
+        known.close()
 
     for ffn in new_files:
         print "Processing %s to serverscratch" % ffn
