@@ -80,7 +80,7 @@ while 1:
     else:
         sleep(sleep_time)     
 
-    if num_of_files>1:
+    if num_of_files>2:
         try:
             os.remove(sorted_raw_img_path + current)
             os.remove(sorted_raw_img_path + 'Caption/' + current + '.txt')
