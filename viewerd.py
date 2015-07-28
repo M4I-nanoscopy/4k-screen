@@ -26,6 +26,8 @@ def sleep(t):
 
     time.sleep(t)
 
+sleep(10)
+
 while 1:
 
     # Scan for images in drop dir, else show raw data
