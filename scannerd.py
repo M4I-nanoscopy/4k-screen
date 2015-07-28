@@ -12,17 +12,21 @@ import shlex
 
 ignore_datasets_started_days_ago = 1
 
+4K_SCREEN = "/home/pr-screen/4k-screen"
+WORKING_DIR = "/home/pr-screen/4k-screen/serverscratch/4k-screen"
+RAWDATA = "/home/pr-screen/4k-screen/rawdata_ro"
+MRC_TO_TIF = 4K_SCREEN + "/mrc2tif.sh"
+CONFIGTXT = 4K_SCREEN + "/config.txt"
+IGNORED_DIRS = 4K_SCREEN + "/ignored_dirs.txt"
+KNOWN_FILES = 4K_SCREEN + "/known_files.txt"
+
 ' TODO: save scanned file list, so that we can load that, instead of having to do one initial scan. '
-f = open( "/home/local/UNIMAAS/h.boulanger/4k-screen/ignored_dirs.txt", 'a')
+f = open( IGNORED_DIRS , 'a')
 f.close()
 
-f = open( "/home/local/UNIMAAS/h.boulanger/4k-screen/known_files.txt", 'a')
+f = open( KNOWN_FILES , 'a')
 f.close()
 
-
-WORKING_DIR = "/home/local/UNIMAAS/h.boulanger/Test/serverscratch/4k-screen"
-RAWDATA = "/home/local/UNIMAAS/h.boulanger/Test/rawdata_ro"
-MRC_TO_TIF = "/home/local/UNIMAAS/h.boulanger/4k-screen/mrc2tif.sh"
 
 def only_accept_extensions(fn, extlist, case_sensitive=False):
     if not case_sensitive:
@@ -69,7 +73,7 @@ def file_blacklist( ffn ):
     return False
 
 def process( ffn ):
-    conversions = text2dict( "/home/local/UNIMAAS/h.boulanger/4k-screen/config.txt" )
+    conversions = text2dict( CONFIGTXT )
 
     for convert_function, patterns in conversions.iteritems():
         for pattern in patterns:
@@ -94,7 +98,7 @@ def text2dict( file ):
     return dictionary
 
 def mrc_convert_autoscale( ffn ):
-    queue("/home/local/UNIMAAS/h.boulanger/4k-screen/mrc2tif.sh '%s' '%s'" % (ffn, no_doubles(ffn) ))
+    queue("%s '%s' '%s'" % (MRC_TO_TIF, ffn, no_doubles(ffn) ))
 
 def autocontrast( ffn ):
     queue("/usr/bin/convert -auto-level '%s' '%s'" % (ffn, no_doubles(ffn)))
@@ -147,12 +151,12 @@ while 1:
     inspected_dirs = 0
     new_file_stats = 0
     new_files = [] # ffn
-    ignored_dirs = text2dict( "/home/local/UNIMAAS/h.boulanger/4k-screen/ignored_dirs.txt" )
-    known_files = text2dict( "/home/local/UNIMAAS/h.boulanger/4k-screen/known_files.txt" )
+    ignored_dirs = text2dict( IGNORED_DIRS )
+    known_files = text2dict( KNOWN_FILES )
  
     for dataset_dirname in glob.glob( os.path.join( RAWDATA ,'*', '*') ):
 
-        ignored = open( "/home/local/UNIMAAS/h.boulanger/4k-screen/ignored_dirs.txt", 'a' )
+        ignored = open( IGNORED_DIRS, 'a' )
 
         if dataset_dirname in ignored_dirs:
             continue
@@ -167,7 +171,7 @@ while 1:
         print 'walking %r' % dataset_dirname
         inspected_dirs += 1
 
-        known = open("/home/local/UNIMAAS/h.boulanger/4k-screen/known_files.txt", 'a')
+        known = open( KNOWN_FILES , 'a')
 
         for r, ds, fs in os.walk( dataset_dirname ):
 
