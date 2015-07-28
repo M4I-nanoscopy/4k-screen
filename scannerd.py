@@ -12,13 +12,13 @@ import shlex
 
 ignore_datasets_started_days_ago = 1
 
-4K_SCREEN = "/home/pr-screen/4k-screen"
+SCREEN_DIR = "/home/pr-screen/4k-screen"
 WORKING_DIR = "/home/pr-screen/4k-screen/serverscratch/4k-screen"
 RAWDATA = "/home/pr-screen/4k-screen/rawdata_ro"
-MRC_TO_TIF = 4K_SCREEN + "/mrc2tif.sh"
-CONFIGTXT = 4K_SCREEN + "/config.txt"
-IGNORED_DIRS = 4K_SCREEN + "/ignored_dirs.txt"
-KNOWN_FILES = 4K_SCREEN + "/known_files.txt"
+MRC_TO_TIF = SCREEN_DIR + "/mrc2tif.sh"
+CONFIGTXT = SCREEN_DIR + "/config.txt"
+IGNORED_DIRS = SCREEN_DIR + "/ignored_dirs.txt"
+KNOWN_FILES = SCREEN_DIR + "/known_files.txt"
 
 ' TODO: save scanned file list, so that we can load that, instead of having to do one initial scan. '
 f = open( IGNORED_DIRS , 'a')
