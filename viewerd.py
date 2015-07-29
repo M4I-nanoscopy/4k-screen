@@ -49,6 +49,9 @@ while 1:
     # Only refresh the directory listing every 6 iterations, or when the file list is empty
     files = os.listdir(raw_img_path)
 
+    if 'Caption' in files:
+        files.remove('Caption'
+
     files.sort(key=lambda x: os.path.getctime(sorted_raw_img_path + x))
     
     num_of_files = len(files)
@@ -82,7 +85,7 @@ while 1:
     else:
         sleep(sleep_time)     
 
-    if num_of_files>2:
+    if num_of_files>1:
         try:
             os.remove(sorted_raw_img_path + current)
             os.remove(sorted_raw_img_path + 'Caption/' + current + '.txt')
