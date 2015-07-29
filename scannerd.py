@@ -91,7 +91,7 @@ def text2dict( file, value_type ):
     f =  open(file,'r')
     lines = f.readlines()
     for line in lines :
-        splitline = line.split()
+        splitline = line.split('###')
         key = splitline[0]
         if value_type=='list':
             value = splitline[1:]
@@ -168,7 +168,7 @@ while 1:
 
         if not match_dataset( dataset_dirname ):
             ignored_dirs[dataset_dirname] = True
-            ignored.write("%s True\n" % (dataset_dirname))
+            ignored.write("%s###True\n" % (dataset_dirname))
             continue
 
         
@@ -190,7 +190,7 @@ while 1:
 
                      
                     known_files[ffn] = True
-                    known.write("%s True\n" %(ffn))
+                    known.write("%s###True\n" %(ffn))
                     
 
                     if file_blacklist(ffn):
