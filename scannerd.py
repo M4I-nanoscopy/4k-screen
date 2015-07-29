@@ -122,7 +122,7 @@ def info( ffn , dirname , copypath ):
     f = open(txtpath+'.txt','a')
 
     date_epoch = os.path.getmtime( ffn )
-    date_struct = time.gmtime(date_epoch)
+    date_struct = time.gmtime(date_epoch+7200)
     year,month,mday,hour,mn,sec = date_struct[:6]
     date = str(year) + '/' + str(month) + '/' + str(mday) + ' ' + str(hour) + ':' + str(mn) + ':' + str(sec)
     f.write(date + ' ')
