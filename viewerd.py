@@ -50,7 +50,7 @@ while 1:
     files = os.listdir(raw_img_path)
 
     if 'Caption' in files:
-        files.remove('Caption'
+        files.remove('Caption')
 
     files.sort(key=lambda x: os.path.getctime(sorted_raw_img_path + x))
     
