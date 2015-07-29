@@ -153,10 +153,11 @@ while 1:
     new_file_stats = 0
     new_files = [] # ffn
 
- 
+    ignored = open( IGNORED_DIRS, 'a' )
+
     for dataset_dirname in glob.glob( os.path.join( RAWDATA ,'*', '*') ):
 
-        ignored = open( IGNORED_DIRS, 'a' )
+        
 
         if dataset_dirname in ignored_dirs:
             continue
@@ -166,7 +167,7 @@ while 1:
             ignored.write("%s True\n" % (dataset_dirname))
             continue
 
-        ignored.close()
+        
 
         print 'walking %r' % dataset_dirname
         inspected_dirs += 1
@@ -198,7 +199,7 @@ while 1:
                     info ( ffn, dataset_dirname, no_doubles(ffn))
 
         known.close()
-       
+    ignored.close()
         
                 
     print "Inspected dataset dirs: %s"%inspected_dirs
