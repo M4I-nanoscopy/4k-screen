@@ -73,7 +73,7 @@ def file_blacklist( ffn ):
     return False
 
 def process( ffn ):
-    conversions = text2dict( CONFIGTXT )
+    conversions = text2dict( CONFIGTXT, 'list' )
 
     for convert_function, patterns in conversions.iteritems():
         for pattern in patterns:
@@ -85,14 +85,17 @@ def process( ffn ):
 
     copy(ffn)
 
-def text2dict( file ):
+def text2dict( file, value_type ):
     dictionary = {}
     f =  open(file,'r')
     lines = f.readlines()
     for line in lines :
         splitline = line.split()
         key = splitline[0]
-        value = splitline[1:]
+        if value_type=='list':
+            value = splitline[1:]
+        elif value_type=='bool':
+            value = (splitline[1]=="True")
         dictionary[key] = value
     f.close()
     return dictionary
@@ -141,8 +144,8 @@ def queue( command ):
     subprocess.call(shlex.split('/usr/bin/tsp -n %s' % command))
 
 
-ignored_dirs = text2dict( IGNORED_DIRS )
-known_files = text2dict( KNOWN_FILES )
+ignored_dirs = text2dict( IGNORED_DIRS, 'bool' )
+known_files = text2dict( KNOWN_FILES, 'bool' )
 
 
 while 1: 
