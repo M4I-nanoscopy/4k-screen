@@ -141,7 +141,8 @@ def queue( command ):
     subprocess.call(shlex.split('/usr/bin/tsp -n %s' % command))
 
 
-
+ignored_dirs = text2dict( IGNORED_DIRS )
+known_files = text2dict( KNOWN_FILES )
 
 
 while 1: 
@@ -151,8 +152,7 @@ while 1:
     inspected_dirs = 0
     new_file_stats = 0
     new_files = [] # ffn
-    ignored_dirs = text2dict( IGNORED_DIRS )
-    known_files = text2dict( KNOWN_FILES )
+
  
     for dataset_dirname in glob.glob( os.path.join( RAWDATA ,'*', '*') ):
 
@@ -193,13 +193,12 @@ while 1:
                         continue
 
                     new_files.append( ffn )
+                    print "Processing %s to serverscratch" % ffn
+                    process(ffn)
                     info ( ffn, dataset_dirname, no_doubles(ffn))
 
         known.close()
-
-    for ffn in new_files:
-        print "Processing %s to serverscratch" % ffn
-        process(ffn)
+       
         
                 
     print "Inspected dataset dirs: %s"%inspected_dirs
