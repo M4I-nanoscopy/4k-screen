@@ -19,6 +19,7 @@ MRC_TO_TIF = SCREEN_DIR + "/mrc2tif.sh"
 CONFIGTXT = SCREEN_DIR + "/config.txt"
 IGNORED_DIRS = SCREEN_DIR + "/ignored_dirs.txt"
 KNOWN_FILES = SCREEN_DIR + "/known_files.txt"
+min_size = 4196883 #size of a 2048x2048 tiff; tiff and mrc weighing approximately the same
 
 ' TODO: save scanned file list, so that we can load that, instead of having to do one initial scan. '
 f = open( IGNORED_DIRS , 'a')
@@ -197,6 +198,12 @@ while 1:
                         continue
 
                     new_files.append( ffn )
+
+                    size = os.stat(ffn).st_size
+                    if size<min_size:
+                        print "Too small for process %s" % ffn
+                        continue
+
                     print "Processing %s to serverscratch" % ffn
                     process(ffn)
                     info ( ffn, dataset_dirname, no_doubles(ffn))
