@@ -88,6 +88,7 @@ def text2dict( file, value_type ):
     f =  open(file,'r')
     lines = f.readlines()
     for line in lines :
+        line.rstrip('\n')
         splitline = line.split('###')
         key = splitline[0]
         if value_type=='list':
@@ -142,78 +143,81 @@ def queue( command ):
     subprocess.call(shlex.split('/usr/bin/tsp -n %s' % command))
 
 
-ignored_dirs = text2dict( IGNORED_DIRS, 'bool' )
-known_files = text2dict( KNOWN_FILES, 'bool' )
+if __name__ == '__main__' :
 
 
-while 1: 
-    now = datetime.datetime.now()
-
-    new_file_stats = 0
-    inspected_dirs = 0
-    new_file_stats = 0
-    new_files = [] # ffn
-
-    ignored = open( IGNORED_DIRS, 'a' )
-
-    for dataset_dirname in glob.glob( os.path.join( RAWDATA ,'*', '*') ):
-
-        
-
-        if dataset_dirname in ignored_dirs:
-            continue
-
-        if not match_dataset( dataset_dirname ):
-            ignored_dirs[dataset_dirname] = True
-            ignored.write("%s###True\n" % (dataset_dirname))
-            continue
-
-        
-
-        print 'walking %r' % dataset_dirname
-        inspected_dirs += 1
-
-        known = open( KNOWN_FILES , 'a')
-
-        for r, ds, fs in os.walk( dataset_dirname ):
-
-            for fn in fs:
-                if only_accept_extensions( fn, ('.tif','.mrc')):
-                    ffn = os.path.join(r, fn)
-
-                    if ffn in known_files:
-                        continue
+    ignored_dirs = text2dict( IGNORED_DIRS, 'bool' )
+    known_files = text2dict( KNOWN_FILES, 'bool' )
 
 
-                     
-                    known_files[ffn] = True
-                    known.write("%s###True\n" %(ffn))
+    while 1: 
+        now = datetime.datetime.now()
+    
+        new_file_stats = 0
+        inspected_dirs = 0
+        new_file_stats = 0
+        new_files = [] # ffn
+    
+        ignored = open( IGNORED_DIRS, 'a' )
+    
+        for dataset_dirname in glob.glob( os.path.join( RAWDATA ,'*', '*') ):
+    
+            
+    
+            if dataset_dirname in ignored_dirs:
+                continue
+    
+            if not match_dataset( dataset_dirname ):
+                ignored_dirs[dataset_dirname] = True
+                ignored.write("%s###True\n" % (dataset_dirname))
+                continue
+    
+            
+    
+            print 'walking %r' % dataset_dirname
+            inspected_dirs += 1
+    
+            known = open( KNOWN_FILES , 'a')
+    
+            for r, ds, fs in os.walk( dataset_dirname ):
+    
+                for fn in fs:
+                    if only_accept_extensions( fn, ('.tif','.mrc')):
+                        ffn = os.path.join(r, fn)
+    
+                        if ffn in known_files:
+                            continue
+    
+    
+                         
+                        known_files[ffn] = True
+                        known.write("%s###True\n" %(ffn))
+                        
+    
+                        if file_blacklist(ffn):
+                            print "Blacklisted %s" % ffn
+                            continue
+    
+                        new_files.append( ffn )
+    
+                        size = os.stat(ffn).st_size
+                        if size<min_size:
+                            print "Too small for process %s" % ffn
+                            continue
+    
+                        print "Processing %s to serverscratch" % ffn
+                        process(ffn)
+                        info ( ffn, dataset_dirname, no_doubles(ffn))
+    
+            known.close()
+        ignored.close()
+            
                     
-
-                    if file_blacklist(ffn):
-                        print "Blacklisted %s" % ffn
-                        continue
-
-                    new_files.append( ffn )
-
-                    size = os.stat(ffn).st_size
-                    if size<min_size:
-                        print "Too small for process %s" % ffn
-                        continue
-
-                    print "Processing %s to serverscratch" % ffn
-                    process(ffn)
-                    info ( ffn, dataset_dirname, no_doubles(ffn))
-
-        known.close()
-    ignored.close()
-        
-                
-    print "Inspected dataset dirs: %s"%inspected_dirs
-    print "Ignored dataset dirs:   %s"%len(ignored_dirs)
-    print "New files seen:         %s"%len(new_files)
-
-    print "--- sleeping... ---"
-    print
-
-    time.sleep(30)
+        print "Inspected dataset dirs: %s"%inspected_dirs
+        print "Ignored dataset dirs:   %s"%len(ignored_dirs)
+        print "New files seen:         %s"%len(new_files)
+    
+        print "--- sleeping... ---"
+        print
+    
+        time.sleep(30)
