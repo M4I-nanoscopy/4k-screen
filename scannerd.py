@@ -9,17 +9,14 @@ import re
 import shutil
 import subprocess
 import shlex
+from config import *
 
 ignore_datasets_started_days_ago = 1
 
-SCREEN_DIR = "/home/pr-screen/4k-screen"
-WORKING_DIR = "/home/pr-screen/4k-screen/serverscratch/4k-screen"
-RAWDATA = "/home/pr-screen/4k-screen/rawdata_ro"
 MRC_TO_TIF = SCREEN_DIR + "/mrc2tif.sh"
 CONFIGTXT = SCREEN_DIR + "/config.txt"
 IGNORED_DIRS = SCREEN_DIR + "/ignored_dirs.txt"
 KNOWN_FILES = SCREEN_DIR + "/known_files.txt"
-min_size = 4196883 #size of a 2048x2048 tiff; tiff and mrc weighing approximately the same
 
 ' TODO: save scanned file list, so that we can load that, instead of having to do one initial scan. '
 f = open( IGNORED_DIRS , 'a')
