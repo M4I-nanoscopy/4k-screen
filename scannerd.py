@@ -86,9 +86,8 @@ def process( ffn ):
 def text2dict( file, value_type ):
     dictionary = {}
     f =  open(file,'r')
-    lines = f.readlines()
+    lines = f.read().splitlines()
     for line in lines :
-        line.rstrip('\n')
         splitline = line.split('###')
         key = splitline[0]
         if value_type=='list':

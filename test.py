@@ -37,19 +37,22 @@ class ScanText2DictTest(unittest.TestCase):
         time.sleep(1)
 
     def test_list(self):
-        expected_list_dict = {'test' : ['0','1','2','3'], 'est' : ['4']}
-        list_dict = text2dict('%s/test_file_list.txt' % SCREEN_DIR, 'list')
-        self.assertEqual( expected_list_dict, list_dict)
+        self.expected_list_dict = {'test' : ['0','1','2','3'], 'est' : ['4']}
+        self.list_dict = text2dict('%s/test_file_list.txt' % SCREEN_DIR, 'list')
+        self.assertEqual( self.expected_list_dict, self.list_dict)
 
     def test_bool(self):
-        expected_bool_dict = {'test' : True, 'est' : False}
-        bool_dict = text2dict('%s/test_file_bool.txt' % SCREEN_DIR, 'bool')
-        self.assertEqual( expected_bool_dict, bool_dict)
+        self.expected_bool_dict = {'test' : True, 'est' : False}
+        self.bool_dict = text2dict('%s/test_file_bool.txt' % SCREEN_DIR, 'bool')
+        self.assertEqual( self.expected_bool_dict, self.bool_dict)
 
     def tearDown(self):
         subprocess.call(shlex.split('/usr/bin/tsp -n rm %s/test_file_list.txt' % SCREEN_DIR))
         subprocess.call(shlex.split('/usr/bin/tsp -n rm %s/test_file_bool.txt' % SCREEN_DIR))
-
+        self.expected_list_dict = None
+        self.list_dict = None
+        self.expected_bool_dict = None
+        self.bool_dict = None
 
 if __name__ == '__main__':
     unittest.main()
