@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import unittest
 import os
 import sys
@@ -75,6 +77,63 @@ class ScanNoDoublesTest(unittest.TestCase):
         self.img_screen = None
         self.no_doubles = None
 
+class ScanMrc2TiffTest(unittest.TestCase):
+
+    def setUp(self):
+        self.img_origin = img_dir + big_mrc
+        self.img_rawdata = RAWDATA + rawdata_ro_img_dir + big_mrc
+        self.img_screen = raw_img_path + big_mrc[:-4] + '.tif'
+        subprocess.call(shlex.split("/bin/cp '%s' '%s'" % (self.img_origin, self.img_rawdata)))
+        
+
+    def test_mrc2tiff(self):
+        mrc_convert_autoscale(self.img_rawdata)
+        time.sleep(2)
+        self.assertTrue(os.path.exists(self.img_screen))
+
+    def tearDown(self):
+        subprocess.call(shlex.split("rm %s" % self.img_rawdata))
+        subprocess.call(shlex.split("rm %s" % self.img_screen))
+        self.img_origin = None
+        self.img_rawdata = None
+        self.img_screen = None
+
+class ScanAutocontrastTest(unittest.TestCase):
+
+    def setUp(self):
+        self.img_origin = img_dir + big_tiff
+        self.img_rawdata = RAWDATA + rawdata_ro_img_dir + big_tiff
+        self.img_screen = raw_img_path + big_tiff
+        subprocess.call(shlex.split("/bin/cp '%s' '%s'" % (self.img_origin, self.img_rawdata)))
+        
+
+    def test_autocontrast(self):
+        autocontrast(self.img_rawdata)
+        time.sleep(2)
+        self.assertTrue(os.path.exists(self.img_screen))
+
+    def tearDown(self):
+        subprocess.call(shlex.split("rm %s" % self.img_rawdata))
+        subprocess.call(shlex.split("rm %s" % self.img_screen))
+        self.img_origin = None
+        self.img_rawdata = None
+        self.img_screen = None
+
+class ScanCopyTest(unittest.TestCase):
+
+    def setUp(self):
+        self.img_origin = img_dir + big_tiff
+        self.img_screen = raw_img_path + big_tiff
+
+    def test_(self):
+        copy(self.img_origin)
+        time.sleep(1)
+        self.assertTrue(os.path.exists(self.img_screen))
+
+    def tearDown(self):
+        subprocess.call(shlex.split("rm %s" % self.img_screen))
+        self.img_origin = None
+        self.img_screen = None
 
 if __name__ == '__main__':
     unittest.main()
