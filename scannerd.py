@@ -70,7 +70,7 @@ def file_blacklist( ffn ):
 
     return False
 
-def process( ffn ):
+def process( ffn, copypath ):
     conversions = text2dict( CONFIGTXT, 'list' )
 
     for convert_function, patterns in conversions.iteritems():
@@ -78,10 +78,10 @@ def process( ffn ):
             m = re.match(pattern, ffn)
         
             if m is not None:
-                globals()[convert_function](ffn)
+                globals()[convert_function](ffn, copypath)
                 return
 
-    copy(ffn)
+    copy(ffn, copypath)
 
 def text2dict( file, value_type ):
     dictionary = {}
@@ -98,11 +98,11 @@ def text2dict( file, value_type ):
     f.close()
     return dictionary
 
-def mrc_convert_autoscale( ffn ):
-    queue("%s '%s' '%s'" % (MRC_TO_TIF, ffn, no_doubles(ffn) ))
+def mrc_convert_autoscale( ffn, copypath ):
+    queue("%s '%s' '%s'" % (MRC_TO_TIF, ffn, copypath ))
 
-def autocontrast( ffn ):
-    queue("/usr/bin/convert -auto-level '%s' '%s'" % (ffn, no_doubles(ffn)))
+def autocontrast( ffn, copypath ):
+    queue("/usr/bin/convert -auto-level '%s' '%s'" % (ffn, copypath))
 
 def no_doubles( ffn ):
     double_diff = 0
@@ -134,8 +134,8 @@ def info( ffn , dirname , copypath ):
 
     f.close()
 
-def copy( ffn ):    
-    queue("/bin/cp '%s' '%s'" % (ffn, no_doubles(ffn)))
+def copy( ffn, copypath ):    
+    queue("/bin/cp '%s' '%s'" % (ffn, copypath))
 
 def queue( command ):
     # Simply add a command to the queue
@@ -205,8 +205,9 @@ if __name__ == '__main__' :
                             continue
     
                         print "Processing %s to serverscratch" % ffn
-                        process(ffn)
-                        info ( ffn, dataset_dirname, no_doubles(ffn))
+                        no_double_path = no_doubles( ffn )
+                        process( ffn, no_double_path )
+                        info ( ffn, dataset_dirname, no_double_path )
     
             known.close()
         ignored.close()
