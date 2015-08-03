@@ -134,6 +134,10 @@ def info( ffn , dirname , copypath ):
 
     f.close()
 
+def size_test( ffn ):
+    size = os.stat(ffn).st_size
+        return size<min_size
+
 def copy( ffn, copypath ):    
     queue("/bin/cp '%s' '%s'" % (ffn, copypath))
 
@@ -141,28 +145,23 @@ def queue( command ):
     # Simply add a command to the queue
     subprocess.call(shlex.split('/usr/bin/tsp -n %s' % command))
 
-
 if __name__ == '__main__' :
-
 
     ignored_dirs = text2dict( IGNORED_DIRS, 'bool' )
     known_files = text2dict( KNOWN_FILES, 'bool' )
 
-
     while 1: 
         now = datetime.datetime.now()
-    
+
         new_file_stats = 0
         inspected_dirs = 0
         new_file_stats = 0
         new_files = [] # ffn
-    
+
         ignored = open( IGNORED_DIRS, 'a' )
-    
+
         for dataset_dirname in glob.glob( os.path.join( RAWDATA ,'*', '*') ):
-    
-            
-    
+
             if dataset_dirname in ignored_dirs:
                 continue
     
@@ -170,9 +169,7 @@ if __name__ == '__main__' :
                 ignored_dirs[dataset_dirname] = True
                 ignored.write("%s###True\n" % (dataset_dirname))
                 continue
-    
-            
-    
+
             print 'walking %r' % dataset_dirname
             inspected_dirs += 1
     
@@ -186,38 +183,33 @@ if __name__ == '__main__' :
     
                         if ffn in known_files:
                             continue
-    
-    
-                         
+
                         known_files[ffn] = True
                         known.write("%s###True\n" %(ffn))
                         
-    
                         if file_blacklist(ffn):
                             print "Blacklisted %s" % ffn
                             continue
-    
-                        new_files.append( ffn )
-    
-                        size = os.stat(ffn).st_size
-                        if size<min_size:
+
+                        if size_test(ffn):
                             print "Too small for process %s" % ffn
                             continue
-    
+
+                        new_files.append( ffn )
+
                         print "Processing %s to serverscratch" % ffn
                         no_double_path = no_doubles( ffn )
                         process( ffn, no_double_path )
                         info ( ffn, dataset_dirname, no_double_path )
-    
+
             known.close()
         ignored.close()
-            
-                    
+
         print "Inspected dataset dirs: %s"%inspected_dirs
         print "Ignored dataset dirs:   %s"%len(ignored_dirs)
         print "New files seen:         %s"%len(new_files)
-    
+
         print "--- sleeping... ---"
         print
-    
+
         time.sleep(30)
