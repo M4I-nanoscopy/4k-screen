@@ -136,7 +136,7 @@ def info( ffn , dirname , copypath ):
 
 def size_test( ffn ):
     size = os.stat(ffn).st_size
-        return size<min_size
+    return size<min_size
 
 def copy( ffn, copypath ):    
     queue("/bin/cp '%s' '%s'" % (ffn, copypath))
