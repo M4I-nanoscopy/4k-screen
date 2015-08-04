@@ -18,6 +18,9 @@ CONFIGTXT = SCREEN_DIR + "/config.txt"
 IGNORED_DIRS = SCREEN_DIR + "/ignored_dirs.txt"
 KNOWN_FILES = SCREEN_DIR + "/known_files.txt"
 
+known_files={}
+ignored_dirs={}
+
 def only_accept_extensions(fn, extlist, case_sensitive=False):
     if not case_sensitive:
         extlist = list(ext.lower()    for ext in extlist)
