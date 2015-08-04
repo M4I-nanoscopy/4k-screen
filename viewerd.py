@@ -39,7 +39,7 @@ while 1:
         sleep(def_sleep_time)
         continue
 
-    if datetime.datetime.weekday() > 4: # 5 or 6, which means Saturday or Sunday
+    if datetime.datetime.today().weekday() > 4: # 5 or 6, which means Saturday or Sunday
         print "Outside office days, go home!"
         sleep(def_sleep_time)
         continue
