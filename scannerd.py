@@ -40,7 +40,7 @@ def match_dataset( dirname ):
     #Does not find changes if a directory inside the directory is changed e.g : .*/20150721_rgb.ravelli/test/
     #if test is changed it will not detect it
     dir_epoch_time = os.path.getmtime( dirname )
-    yr,mo,dy = time.gmtime(dir_epoch_time)[:3]
+    yr,mo,dy = time.localtime(dir_epoch_time)[:3]
 
     # no time, so be pessimistic about when on that day it was started
     dataset_datetime = datetime.datetime( yr, mo, dy, 23,59) 
@@ -114,19 +114,16 @@ def info( ffn , dirname , copypath ):
     f = open(txtpath+'.txt','a')
 
     date_epoch = os.path.getmtime( ffn )
-    date_struct = time.gmtime(date_epoch+7200)
-    year,month,mday,hour,mn,sec = date_struct[:6]
-    date = str(year) + '/' + str(month) + '/' + str(mday) + ' ' + str(hour) + ':' + str(mn) + ':' + str(sec)
-    f.write(date + ' ')
+    date_struct = time.localtime(date_epoch)
+    date = time.asctime( date_struct )
 
     microscope = os.path.split( dirname )[0]
     microscope = os.path.basename ( microscope)
-    f.write(microscope + ' ')
 
     operator = os.path.basename( dirname )
     operator = operator[9:]
-    f.write(operator)
 
+    f.write( date + microscope + operator )
     f.close()
 
 def size_test( ffn ):
