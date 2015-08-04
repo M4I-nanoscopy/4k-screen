@@ -18,14 +18,6 @@ CONFIGTXT = SCREEN_DIR + "/config.txt"
 IGNORED_DIRS = SCREEN_DIR + "/ignored_dirs.txt"
 KNOWN_FILES = SCREEN_DIR + "/known_files.txt"
 
-' TODO: save scanned file list, so that we can load that, instead of having to do one initial scan. '
-f = open( IGNORED_DIRS , 'a')
-f.close()
-
-f = open( KNOWN_FILES , 'a')
-f.close()
-
-
 def only_accept_extensions(fn, extlist, case_sensitive=False):
     if not case_sensitive:
         extlist = list(ext.lower()    for ext in extlist)
@@ -147,9 +139,6 @@ def queue( command ):
 
 if __name__ == '__main__' :
 
-    ignored_dirs = text2dict( IGNORED_DIRS, 'bool' )
-    known_files = text2dict( KNOWN_FILES, 'bool' )
-
     while 1: 
         now = datetime.datetime.now()
 
@@ -158,8 +147,6 @@ if __name__ == '__main__' :
         new_file_stats = 0
         new_files = [] # ffn
 
-        ignored = open( IGNORED_DIRS, 'a' )
-
         for dataset_dirname in glob.glob( os.path.join( RAWDATA ,'*', '*') ):
 
             if dataset_dirname in ignored_dirs:
@@ -167,13 +154,10 @@ if __name__ == '__main__' :
     
             if not match_dataset( dataset_dirname ):
                 ignored_dirs[dataset_dirname] = True
-                ignored.write("%s###True\n" % (dataset_dirname))
                 continue
 
             print 'walking %r' % dataset_dirname
             inspected_dirs += 1
-    
-            known = open( KNOWN_FILES , 'a')
     
             for r, ds, fs in os.walk( dataset_dirname ):
     
@@ -185,7 +169,6 @@ if __name__ == '__main__' :
                             continue
 
                         known_files[ffn] = True
-                        known.write("%s###True\n" %(ffn))
                         
                         if file_blacklist(ffn):
                             print "Blacklisted %s" % ffn
@@ -201,9 +184,6 @@ if __name__ == '__main__' :
                         no_double_path = no_doubles( ffn )
                         process( ffn, no_double_path )
                         info ( ffn, dataset_dirname, no_double_path )
-
-            known.close()
-        ignored.close()
 
         print "Inspected dataset dirs: %s"%inspected_dirs
         print "Ignored dataset dirs:   %s"%len(ignored_dirs)
