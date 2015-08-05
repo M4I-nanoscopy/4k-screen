@@ -9,6 +9,7 @@ import re
 import shutil
 import subprocess
 import shlex
+import argparse
 from config import *
 
 ignore_datasets_started_days_ago = 1
@@ -18,8 +19,12 @@ CONFIGTXT = SCREEN_DIR + "/config.txt"
 IGNORED_DIRS = SCREEN_DIR + "/ignored_dirs.txt"
 KNOWN_FILES = SCREEN_DIR + "/known_files.txt"
 
-known_files={}
-ignored_dirs={}
+known_files = {}
+ignored_dirs = {}
+
+parser = argparse.ArgumentParser( description = 'Process some rawdata')
+parser.add_argument('--skip', action='store_true', help = 'Put all the existing images in known files on the first round')
+skip = parser.parse_args()
 
 def only_accept_extensions(fn, extlist, case_sensitive=False):
     if not case_sensitive:
@@ -32,7 +37,7 @@ def only_accept_extensions(fn, extlist, case_sensitive=False):
 
 def match_dataset( dirname ):
     # match automatically generated dirnames like 20141124_rbg.ravelli
-    m = re.match('^(20[0-9][0-9])([01][0-9])([0123][0-9])[_-].*', os.path.basename(dirname) )
+    m = re.match( '^(20[0-9][0-9])([01][0-9])([0123][0-9])[_-].*', os.path.basename( dirname ) )
     if m == None:
         print "Ignoring from now on, not named like a dataset dir: %r" % dirname
         return False
@@ -40,7 +45,7 @@ def match_dataset( dirname ):
     #Does not find changes if a directory inside the directory is changed e.g : .*/20150721_rgb.ravelli/test/
     #if test is changed it will not detect it
     dir_epoch_time = os.path.getmtime( dirname )
-    yr,mo,dy = time.localtime(dir_epoch_time)[:3]
+    yr,mo,dy = time.localtime( dir_epoch_time )[:3]
 
     # no time, so be pessimistic about when on that day it was started
     dataset_datetime = datetime.datetime( yr, mo, dy, 23,59) 
@@ -48,17 +53,17 @@ def match_dataset( dirname ):
     if ago.days > ignore_datasets_started_days_ago:
         print "Ignoring from now on, %d is more than %s days ago: %r"%( ago.days, 
                                                                         ignore_datasets_started_days_ago,
-                                                                        dataset_dirname)
+                                                                        dataset_dirname )
         return False
 
     return True
 
 def file_blacklist( ffn ):
-    with open(WORKING_DIR + '/blacklist.txt') as f:
+    with open( WORKING_DIR + '/blacklist.txt' ) as f:
         patterns = f.read().splitlines()
 
     for pattern in patterns:
-        m = re.match(pattern, ffn)
+        m = re.match( pattern, ffn )
         
         if m is not None:
             return True
@@ -73,7 +78,7 @@ def process( ffn, copypath ):
             m = re.match(pattern, ffn)
         
             if m is not None:
-                globals()[convert_function](ffn, copypath)
+                globals()[convert_function]( ffn, copypath )
                 return
 
     copy(ffn, copypath)
@@ -88,24 +93,24 @@ def text2dict( file, value_type ):
         if value_type=='list':
             value = splitline[1:]
         elif value_type=='bool':
-            value = (splitline[1]=="True")
+            value = ( splitline[1]=="True" )
         dictionary[key] = value
     f.close()
     return dictionary
 
 def mrc_convert_autoscale( ffn, copypath ):
-    queue("%s '%s' '%s'" % (MRC_TO_TIF, ffn, copypath ))
+    queue("%s '%s' '%s'" % ( MRC_TO_TIF, ffn, copypath ))
 
 def autocontrast( ffn, copypath ):
-    queue("/usr/bin/convert -auto-level '%s' '%s'" % (ffn, copypath))
+    queue("/usr/bin/convert -auto-level '%s' '%s'" % ( ffn, copypath ))
 
 def no_doubles( ffn ):
     double_diff = 0
-    copypath = WORKING_DIR + '/rawdata/' + os.path.basename(ffn)[:-4] + '.tif'
+    copypath = WORKING_DIR + '/rawdata/' + os.path.basename( ffn )[:-4] + '.tif'
     copy_copypath = copypath
     while os.path.exists(copy_copypath):
         double_diff+=1
-        copy_copypath = copypath[:-4] + str(double_diff) + '.tif'
+        copy_copypath = copypath[:-4] + str( double_diff ) + '.tif'
     return copy_copypath
 
 def info( ffn , dirname , copypath ):
@@ -115,15 +120,15 @@ def info( ffn , dirname , copypath ):
 
     date_epoch = os.path.getmtime( ffn )
     date_struct = time.localtime(date_epoch)
-    date = time.asctime( date_struct )
+    date = time.strftime( "%a, %Y-%m-%d %H:%M",date_struct )
 
     microscope = os.path.split( dirname )[0]
-    microscope = os.path.basename ( microscope)
+    microscope = os.path.basename ( microscope )
 
     operator = os.path.basename( dirname )
     operator = operator[9:]
 
-    f.write( date + microscope + operator )
+    f.write( date + ', ' + microscope + ', ' + operator )
     f.close()
 
 def size_test( ffn ):
@@ -131,7 +136,7 @@ def size_test( ffn ):
     return size<min_size
 
 def copy( ffn, copypath ):    
-    queue("/bin/cp '%s' '%s'" % (ffn, copypath))
+    queue("/bin/cp '%s' '%s'" % (ffn, copypath)) # when  too many files processed it makes double errors
 
 def queue( command ):
     # Simply add a command to the queue
@@ -169,7 +174,11 @@ if __name__ == '__main__' :
                             continue
 
                         known_files[ffn] = True
-                        
+
+                        if skip.skip:
+                            print "First round file %s" % ffn
+                            continue
+
                         if file_blacklist(ffn):
                             print "Blacklisted %s" % ffn
                             continue
@@ -184,6 +193,8 @@ if __name__ == '__main__' :
                         no_double_path = no_doubles( ffn )
                         process( ffn, no_double_path )
                         info ( ffn, dataset_dirname, no_double_path )
+
+        skip.skip = False
 
         print "Inspected dataset dirs: %s"%inspected_dirs
         print "Ignored dataset dirs:   %s"%len(ignored_dirs)
