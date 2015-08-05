@@ -104,14 +104,14 @@ def mrc_convert_autoscale( ffn, copypath ):
 def autocontrast( ffn, copypath ):
     queue("/usr/bin/convert -auto-level '%s' '%s'" % ( ffn, copypath ))
 
-def no_doubles( ffn ):
+def no_doubles_caption( ffn, caption_dirpath, file_ext='.tif' ):
     double_diff = 0
-    copypath = WORKING_DIR + '/rawdata/' + os.path.basename( ffn )[:-4] + '.tif'
-    copy_copypath = copypath
-    while os.path.exists(copy_copypath):
+    captionpath = os.path.join(caption_dirpath, os.path.basename( ffn )[:-4]+ '%s.txt' % file_ext)
+    copy_captionpath = captionpath
+    while os.path.exists(copy_captionpath):
         double_diff+=1
-        copy_copypath = copypath[:-4] + str( double_diff ) + '.tif'
-    return copy_copypath
+        copy_captionpath = captionpath[:-8] + str( double_diff )+ '%s.txt' % file_ext
+    return os.path.basename(copy_captionpath)[:-4]   #returns file name
 
 def info( ffn , dirname , copypath ):
     head,tail=os.path.split(copypath)
@@ -190,7 +190,8 @@ if __name__ == '__main__' :
                         new_files.append( ffn )
 
                         print "Processing %s to serverscratch" % ffn
-                        no_double_path = no_doubles( ffn )
+                        no_double_name = no_doubles_caption( ffn, os.path.join(WORKING_DIR,'rawdata','Caption') )
+                        no_double_path = os.path.join(WORKING_DIR, 'rawdata', no_double_name)
                         process( ffn, no_double_path )
                         info ( ffn, dataset_dirname, no_double_path )
 
