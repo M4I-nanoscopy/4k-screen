@@ -19,7 +19,7 @@ class Feh:
 
     def zoom_100(self, file, dir):
         
-        subprocess.Popen([FEH, "-q", "-F","--zoom", "100", "-Y","-d", "-R", str(sleep_time + buffer_time), "-C", font_dir, "-e", "yudit/40", "--draw-tinted","-K",'Caption/', file], cwd=dir)
+        subprocess.Popen([FEH, "-q", "-F","--zoom", "100", "-Y", "-R", str(sleep_time + buffer_time), "-C", font_dir, "-e", "yudit/40", "--draw-tinted","-K",'Caption/', file], cwd=dir)
         self.current = file
         self.mode = ZOOM_100
 

@@ -126,7 +126,7 @@ def info( ffn , dirname , copypath ):
     operator = os.path.basename( dirname )
     operator = operator[9:]
 
-    f.write( date + ', ' + microscope + ', ' + operator )
+    f.write( tail + ', ' + date + ', ' + microscope + ', ' + operator )
     f.close()
 
 def size_test( ffn ):
