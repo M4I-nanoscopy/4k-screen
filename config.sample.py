@@ -8,7 +8,6 @@ raw_img_path = "/mnt/serverscratch/4k-screen/rawdata"
 ## Feh config ##
 FEH = "/home/pi/feh-2.13/src/feh"
 #FEH = "feh"
-date_sh = "/home/pi/4k-screen/date.sh"
 font_dir = "/home/pi/feh-2.13/share/fonts/"
 sleep_time = 10
 buffer_time = 2

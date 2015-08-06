@@ -24,7 +24,7 @@ ignored_dirs = {}
 
 parser = argparse.ArgumentParser( description = 'Process some rawdata')
 parser.add_argument('--skip', action='store_true', help = 'Put all the existing images in known files on the first round')
-skip = parser.parse_args()
+config = parser.parse_args()
 
 def only_accept_extensions(fn, extlist, case_sensitive=False):
     if not case_sensitive:
@@ -175,7 +175,7 @@ if __name__ == '__main__' :
 
                         known_files[ffn] = True
 
-                        if skip.skip:
+                        if config.skip:
                             print "First round file %s" % ffn
                             continue
 
@@ -195,7 +195,7 @@ if __name__ == '__main__' :
                         process( ffn, no_double_path )
                         info ( ffn, dataset_dirname, no_double_path )
 
-        skip.skip = False
+        config.skip = False
 
         print "Inspected dataset dirs: %s"%inspected_dirs
         print "Ignored dataset dirs:   %s"%len(ignored_dirs)

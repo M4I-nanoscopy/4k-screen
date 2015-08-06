@@ -3,8 +3,6 @@ import signal
 import time
 from config import *
 
-date = date_sh + " %F"
-
 FULL_SCREEN = 1
 ZOOM_100 = 2
 
