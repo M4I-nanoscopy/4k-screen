@@ -51,7 +51,7 @@ def match_dataset( dirname ):
     if ago.days > ignore_datasets_started_days_ago:
         print "Ignoring from now on, %d is more than %s days ago: %r"%( ago.days, 
                                                                         ignore_datasets_started_days_ago,
-                                                                        dataset_dirname )
+                                                                        dirname )
         return False
 
     return True
