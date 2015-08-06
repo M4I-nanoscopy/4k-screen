@@ -140,66 +140,72 @@ def queue( command ):
     # Simply add a command to the queue
     subprocess.call(shlex.split('/usr/bin/tsp -n %s' % command))
 
+def main():
+    
+    new_file_stats = 0
+    inspected_dirs = 0
+    new_file_stats = 0
+    new_files = [] # ffn
+
+    for dataset_dirname in glob.glob( os.path.join( RAWDATA ,'*', '*') ):
+
+        if dataset_dirname in ignored_dirs:
+            continue
+    
+        if not match_dataset( dataset_dirname ):
+            ignored_dirs[dataset_dirname] = True
+            continue
+
+        print 'walking %r' % dataset_dirname
+        inspected_dirs += 1
+    
+        for r, ds, fs in os.walk( dataset_dirname ):
+    
+            for fn in fs:
+                if only_accept_extensions( fn, ('.tif','.mrc')):
+                    ffn = os.path.join(r, fn)
+    
+                    if ffn in known_files:
+                        continue
+
+                    if time.time()-os.path.getmtime(ffn)<25:
+                        continue
+
+                    known_files[ffn] = True
+
+                    if config.skip:
+                        print "First round file %s" % ffn
+                        continue
+
+                    if file_blacklist(ffn):
+                        print "Blacklisted %s" % ffn
+                        continue
+
+                    if size_test(ffn):
+                        print "Too small for process %s" % ffn
+                        continue
+
+                    new_files.append( ffn )
+
+                    print "Processing %s to serverscratch" % ffn
+                    no_double_name = no_doubles_caption( ffn, os.path.join(WORKING_DIR,'rawdata','Caption') )
+                    no_double_path = os.path.join(WORKING_DIR, 'rawdata', no_double_name)
+                    process( ffn, no_double_path )
+                    info ( ffn, dataset_dirname, no_double_path )
+
+    config.skip = False
+
+    print "Inspected dataset dirs: %s"%inspected_dirs
+    print "Ignored dataset dirs:   %s"%len(ignored_dirs)
+    print "New files seen:         %s"%len(new_files)
+
+    print "--- sleeping... ---"
+    print
+
+    time.sleep(30)
+
 if __name__ == '__main__' :
 
     while 1: 
         now = datetime.datetime.now()
-
-        new_file_stats = 0
-        inspected_dirs = 0
-        new_file_stats = 0
-        new_files = [] # ffn
-
-        for dataset_dirname in glob.glob( os.path.join( RAWDATA ,'*', '*') ):
-
-            if dataset_dirname in ignored_dirs:
-                continue
-    
-            if not match_dataset( dataset_dirname ):
-                ignored_dirs[dataset_dirname] = True
-                continue
-
-            print 'walking %r' % dataset_dirname
-            inspected_dirs += 1
-    
-            for r, ds, fs in os.walk( dataset_dirname ):
-    
-                for fn in fs:
-                    if only_accept_extensions( fn, ('.tif','.mrc')):
-                        ffn = os.path.join(r, fn)
-    
-                        if ffn in known_files:
-                            continue
-
-                        known_files[ffn] = True
-
-                        if config.skip:
-                            print "First round file %s" % ffn
-                            continue
-
-                        if file_blacklist(ffn):
-                            print "Blacklisted %s" % ffn
-                            continue
-
-                        if size_test(ffn):
-                            print "Too small for process %s" % ffn
-                            continue
-
-                        new_files.append( ffn )
-
-                        print "Processing %s to serverscratch" % ffn
-                        no_double_name = no_doubles_caption( ffn, os.path.join(WORKING_DIR,'rawdata','Caption') )
-                        no_double_path = os.path.join(WORKING_DIR, 'rawdata', no_double_name)
-                        process( ffn, no_double_path )
-                        info ( ffn, dataset_dirname, no_double_path )
-
-        config.skip = False
-
-        print "Inspected dataset dirs: %s"%inspected_dirs
-        print "Ignored dataset dirs:   %s"%len(ignored_dirs)
-        print "New files seen:         %s"%len(new_files)
-
-        print "--- sleeping... ---"
-        print
-
-        time.sleep(30)
+        main()
