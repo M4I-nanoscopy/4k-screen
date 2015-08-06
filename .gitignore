@@ -5,4 +5,6 @@ cifs-credentials
 .imagic_history
 *.pyc
 *~
-config.py
+Config/config.py
+Config/config.txt
+launcher.sh

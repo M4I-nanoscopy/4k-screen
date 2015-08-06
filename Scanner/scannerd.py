@@ -14,10 +14,8 @@ from config import *
 
 ignore_datasets_started_days_ago = 1
 
-MRC_TO_TIF = SCREEN_DIR + "/mrc2tif.sh"
-CONFIGTXT = SCREEN_DIR + "/config.txt"
-IGNORED_DIRS = SCREEN_DIR + "/ignored_dirs.txt"
-KNOWN_FILES = SCREEN_DIR + "/known_files.txt"
+MRC_TO_TIF = os.path.join(SCREEN_DIR, "mrc2tif.sh")
+CONFIGTXT = os.path.join(SCREEN_DIR, "Config", "config.txt")
 
 known_files = {}
 ignored_dirs = {}
