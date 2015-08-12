@@ -58,7 +58,12 @@ while 1:
         files.remove('Caption')
 
     files.sort(key=lambda x: os.path.getctime(sorted_raw_img_path + x))
-    
+
+    # Cifs drops sometimes temp files in the directory. remove
+    for fil in files:
+        if re.match("cifs.{4}", fil):
+            files.remove(fil)
+
     num_of_files = len(files)
 
     if num_of_files == 0:
@@ -66,13 +71,6 @@ while 1:
         continue
 
     current = files.pop(0)
-
-    # Cifs drops sometimes temp files in the directory. Skip
-    if re.match("cifs.{4}", current):
-        print "Skipping temp file %s "  % current
-        sleep(min_sleep_time)
-        continue
-
     
     if os.path.exists(sorted_raw_img_path + current):
         print "Show %s" % current

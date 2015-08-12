@@ -202,10 +202,9 @@ def main():
     print "--- sleeping... ---"
     print
 
-    time.sleep(30)
-
 if __name__ == '__main__' :
 
     while 1: 
         now = datetime.datetime.now()
         main()
+        time.sleep(30)
