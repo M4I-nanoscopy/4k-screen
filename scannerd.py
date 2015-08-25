@@ -138,7 +138,7 @@ def copy( ffn, copypath ):
 
 def queue( command ):
     # Simply add a command to the queue
-    subprocess.call(shlex.split('/usr/bin/tsp -n %s' % command))
+    subprocess.call('/usr/bin/tsp -n %s' % command, shell=True)
 
 def main():
     
