@@ -39,16 +39,6 @@ while 1:
         sleep(def_sleep_time)
         continue
 
-    if datetime.datetime.today().weekday() > 4: # 5 or 6, which means Saturday or Sunday
-        print "Outside office days, go home!"
-        sleep(def_sleep_time)
-        continue
-
-    if datetime.datetime.now().hour > 20 or datetime.datetime.now().hour < 7:
-    	print "Outside office hours, go home!"
-    	sleep(def_sleep_time)
-    	continue
-
     print "Raw data mode in 100% zoom"
 
     # Only refresh the directory listing every 6 iterations, or when the file list is empty
