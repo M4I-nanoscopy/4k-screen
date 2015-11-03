@@ -31,7 +31,13 @@ sleep(10)
 while 1:
 
     # Scan for images in drop dir, else show raw data
-    user_files = os.listdir(drop_img_path)
+    try: 
+        user_files = os.listdir(drop_img_path)
+    except OSError:
+        print "OSError"
+        sleep(def_sleep_time)
+        continue
+
     if len(user_files) > 0:
         print "Full screen mode for user images"
         feh.full_screen(drop_img_path)
@@ -41,8 +47,12 @@ while 1:
 
     print "Raw data mode in 100% zoom"
 
-    # Only refresh the directory listing every 6 iterations, or when the file list is empty
-    files = os.listdir(raw_img_path)
+    try:
+        files = os.listdir(raw_img_path)
+    except OSError:
+        print "OSerror"
+        sleep(def_sleep_time)
+        continue
 
     if 'Caption' in files:
         files.remove('Caption')
