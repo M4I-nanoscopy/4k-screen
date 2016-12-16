@@ -196,7 +196,10 @@ def main():
                     no_double_name = no_doubles_caption( ffn, os.path.join(WORKING_DIR,'rawdata','Caption') )
                     no_double_path = os.path.join(WORKING_DIR, 'rawdata', no_double_name)
                     process( ffn, no_double_path )
-                    info ( ffn, dataset_dirname, no_double_path )
+                    try:
+                        info ( ffn, dataset_dirname, no_double_path )
+                    except OSError:
+                        print "Failure to write caption file"
 
     config.skip = False
 
