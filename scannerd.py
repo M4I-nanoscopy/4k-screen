@@ -198,7 +198,7 @@ def main():
                     process( ffn, no_double_path )
                     try:
                         info ( ffn, dataset_dirname, no_double_path )
-                    except OSError:
+                    except (OSError, IOError) as e:
                         print "Failure to write caption file"
 
     config.skip = False
