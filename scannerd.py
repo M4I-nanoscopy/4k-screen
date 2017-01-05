@@ -61,9 +61,14 @@ def match_dataset( dirname ):
 
     return True
 
+patterns = []
 def file_blacklist( ffn ):
-    with open( WORKING_DIR + '/blacklist.txt' ) as f:
-        patterns = f.read().splitlines()
+    global patterns
+
+    # Open the blacklist only once per run. It was not neccesary to check this more often
+    if len(patterns) == 0:
+        with open( WORKING_DIR + '/blacklist.txt' ) as f:
+            patterns = f.read().splitlines()
 
     for pattern in patterns:
         m = re.match( pattern, ffn )
