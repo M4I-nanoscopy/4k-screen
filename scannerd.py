@@ -40,13 +40,18 @@ def match_dataset( dirname ):
         print "Ignoring from now on, not named like a dataset dir: %r" % dirname
         return False
 
-    #Does not find changes if a directory inside the directory is changed e.g : .*/20150721_rgb.ravelli/test/
-    #if test is changed it will not detect it
-    dir_epoch_time = os.path.getmtime( dirname )
-    yr,mo,dy = time.localtime( dir_epoch_time )[:3]
+    # Does not find changes if a directory inside the directory is changed e.g : .*/20150721_rgb.ravelli/test/
+    # if test is changed it will not detect it
+    try:
+        dir_epoch_time = os.path.getmtime( dirname )
+        yr,mo,dy = time.localtime( dir_epoch_time )[:3]
+    except OSError:
+         # Fallback to the directory name, happens sometime with network issues
+         print "Fallback to directory name"
+         yr,mo,dy = m.groups()
 
     # no time, so be pessimistic about when on that day it was started
-    dataset_datetime = datetime.datetime( yr, mo, dy, 23,59) 
+    dataset_datetime = datetime.datetime( int(yr), int(mo), int(dy), 23,59) 
     ago = now - dataset_datetime
     if ago.days > ignore_datasets_started_days_ago:
         print "Ignoring from now on, %d is more than %s days ago: %r"%( ago.days, 
@@ -56,9 +61,14 @@ def match_dataset( dirname ):
 
     return True
 
+patterns = []
 def file_blacklist( ffn ):
-    with open( WORKING_DIR + '/blacklist.txt' ) as f:
-        patterns = f.read().splitlines()
+    global patterns
+
+    # Open the blacklist only once per run. It was not neccesary to check this more often
+    if len(patterns) == 0:
+        with open( WORKING_DIR + '/blacklist.txt' ) as f:
+            patterns = f.read().splitlines()
 
     for pattern in patterns:
         m = re.match( pattern, ffn )
@@ -191,7 +201,10 @@ def main():
                     no_double_name = no_doubles_caption( ffn, os.path.join(WORKING_DIR,'rawdata','Caption') )
                     no_double_path = os.path.join(WORKING_DIR, 'rawdata', no_double_name)
                     process( ffn, no_double_path )
-                    info ( ffn, dataset_dirname, no_double_path )
+                    try:
+                        info ( ffn, dataset_dirname, no_double_path )
+                    except (OSError, IOError) as e:
+                        print "Failure to write caption file"
 
     config.skip = False
 
