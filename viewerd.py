@@ -57,12 +57,12 @@ while 1:
     if 'Caption' in files:
         files.remove('Caption')
 
-    files.sort(key=lambda x: os.path.getctime(sorted_raw_img_path + x))
-
     # Cifs drops sometimes temp files in the directory. remove
     for fil in files:
         if re.match("cifs.{4}", fil):
             files.remove(fil)
+
+    files.sort(key=lambda x: os.path.getctime(sorted_raw_img_path + x))
 
     num_of_files = len(files)
 
