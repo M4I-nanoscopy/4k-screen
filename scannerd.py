@@ -10,6 +10,8 @@ import shutil
 import subprocess
 import shlex
 import argparse
+import traceback
+
 from config import *
 
 ignore_datasets_started_days_ago = 1
@@ -217,7 +219,17 @@ def main():
 
 if __name__ == '__main__' :
 
-    while 1: 
+
+    while 1:
         now = datetime.datetime.now()
-        main()
+        try:
+            main()
+        except OSError as e:
+            print traceback.format_exc()
+            print "Fatal OS exception, restarting from top"
+            time.sleep(300)
+            pass
         time.sleep(30)
+
+
+
