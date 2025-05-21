@@ -1,0 +1,10 @@
+.*/SCIOS/.*/Image - SliceImage.*
+.*/SCIOS/.*/Ion - Alignment (PatternPlacement) - IonBeamDriftCorrection.*
+.*/SCIOS/.*/AlignmentImage_.*
+.*/SCIOS/.*/ReferenceImage_.*
+.*/T12.*/.*_hist.tif
+.*/T12.*/.*_thumb.tif
+.*/ARCTICA/.*_hist.tif
+.*/ARCTICA/.*_thumb.tif
+.*/CORRSIGHT/.*/image_pyramid/.*
+.*/CORRSIGHT/*
