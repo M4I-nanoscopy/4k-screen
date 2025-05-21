@@ -31,5 +31,5 @@ class Feh:
         try:
             if self.mode != 0:
                 self.process.kill()
-       	except OSError:
+        except OSError:
 	        print("Process died itself")
