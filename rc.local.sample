@@ -1,6 +1,28 @@
 #!/bin/bash
 # rc.local script for mounting serverscratch and starting viewer process for 4k-screen
 # also adds line to start ppms panel on startup
+# NOTE.... This is client-side rc-local! The server-rc.local is written in the ansible playbook
+
+# Wait for network to be available and system to be fully up
+sleep 30
+
+# Mount the CIFS share
+if [ ! -d "/home/pi/pr-screen/serverscratch" ]; then
+    mkdir -p /home/pi/pr-screen/serverscratch
+fi
+
+mount -t cifs //ca-nas101.unimaas.nl/M4I-nano-scratchdata /home/pi/pr-screen/serverscratch \
+-o credentials=/home/pi/pr-screen/cifs-credentials,auto,nounix,noserverino,uid=pr-screen,gid=pr-screen,vers=1.0
+
+# Start the viewer process
+sudo -u pi sh -c 'DISPLAY=:0 /usr/bin/python3 -u /home/pi/pr-screen/4k-screen/viewerd.py --skip > /home/pi/pr-screen/4k-screen-log.txt 2>&1' &
+
+# Launch Chromium browser in full screen mode
+sudo -u pi DISPLAY=:0 chromium-browser --noerrdialogs --disable-infobars --kiosk 'https://wikiscopy.unimaas.nl/panel/current_sessions_panel' &
+
+exit 0#!/bin/bash
+# rc.local script for mounting serverscratch and starting viewer process for 4k-screen
+# also adds line to start ppms panel on startup
 
 # Wait for network to be available and system to be fully up
 sleep 30
