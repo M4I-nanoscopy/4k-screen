@@ -14,7 +14,7 @@ import traceback
 
 from config import *
 
-ignore_datasets_started_days_ago = 1
+ignore_datasets_started_days_ago = 14
 
 MRC_TO_TIF = os.path.join(SCREEN_DIR, "mrc2tif.sh")
 CONFIGTXT = os.path.join(SCREEN_DIR, "Config", "config.txt")
